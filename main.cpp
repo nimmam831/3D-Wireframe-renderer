@@ -1,12 +1,13 @@
-//Include
-#pragma warning(disable : 4996)
-#include "2DVect.h"
-#include "3DVect.h"
-#include <fstream>
-#include <iostream>
+
+#pragma warning(disable : 4996) // IMPORTANT WITH VISUAL STUDIO!!!
+//Includes
+#include "2DVect.h"//2D vector class
+#include "3DVect.h"//3D vector class
+#include <fstream>//For saving files
+#include <iostream> //For printing
+#include <time.h> //For time
 #include <vector>
-#include <stdlib.h>
-//Shaders
+#include <windows.h>
 using namespace std;
 //Define color class
 struct Color {
@@ -14,21 +15,22 @@ struct Color {
 	double g;
 	double b;
 };
-Color shadertesting(int x, int y, int z, int height, int width) {
-	//Color the pixels red
+//Testing shader
+Color shadertesting(int x, int y, int height, int width) {
+	//Color the pixels
 	Color* colors = new Color[1];
-	colors[0].r = x % 128;
-	colors[0].g = y % 192;
-	colors[0].b = x + y * 2 % 46;
+	colors[0].r = x % 178;
+	colors[0].g = y % 178;
+	colors[0].b = x + y * 2 % 178;
 	return colors[0];
 }
 //Functions
 TwoDVect project(double X, double Y, double Z, double focalLength, int width, int height) {
 	double _x_ = focalLength * X / (focalLength + Z);
 	double _y_ = focalLength * Y / (focalLength + Z);
-	std::cout << _x_ << ' ' << _y_ << endl;
 	return TwoDVect(_x_ + (width / 2), _y_ + (height / 2));
 }
+int pixels = 0;
 void line(int x0, int y0, int x1, int y1, std::vector<TwoDVect>& positions)
 {
 	int dx = abs(x1 - x0);
@@ -42,6 +44,9 @@ void line(int x0, int y0, int x1, int y1, std::vector<TwoDVect>& positions)
 
 	while (true)
 	{
+		//pixels++;
+		//cout << "pixel " << pixels << endl;
+		//Sleep(.010);
 		positions.push_back(TwoDVect(x, y));
 
 		if (x == x1 && y == y1)
@@ -70,19 +75,19 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 	}
 	for (int point = 0; point < 8; point++) {
 		TwoDVect start = projections[0];
 		TwoDVect end = projections[2]; // Wrap around to the first point
-
+		
 		// Draw a line segment from 'start' to 'end'
 		std::vector<TwoDVect> positions;
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 	}
 	for (int point = 0; point < 8; point++) {
@@ -94,7 +99,7 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 	}
 	for (int point = 0; point < 8; point++) {
@@ -106,7 +111,7 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 	}
 	for (int point = 0; point < 8; point++) {
@@ -118,7 +123,7 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 	}
 	for (int point = 0; point < 8; point++) {
@@ -130,19 +135,19 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 	}
 	for (int point = 0; point < 8; point++) {
 		TwoDVect start = projections[2];
 		TwoDVect end = projections[6]; // Wrap around to the first point
-
+			
 		// Draw a line segment from 'start' to 'end'
 		std::vector<TwoDVect> positions;
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 	}
 
@@ -154,7 +159,7 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 	}
 	for (int i = 0; i < 1; i++) {
@@ -167,7 +172,7 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 
 	}
@@ -181,7 +186,7 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 
 	}
@@ -195,7 +200,7 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 
 	}
@@ -209,7 +214,7 @@ void cube(ThreeDVect* positions, int width, int height, TwoDVect* projections, C
 		line(start.getX(), start.getY(), end.getX(), end.getY(), positions);
 		for (int position = 0; position < positions.size(); position++) {
 			TwoDVect projection = positions[position];
-			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1, 1);
+			pixels[(height - (int)projection.getY()) * width + (int)projection.getX()] = shadertesting((int)projection.getY(), (int)projection.getX(), 1, 1);
 		}
 
 	}
@@ -225,7 +230,6 @@ void savebmp(const char* filename, int w, int h, int dpi, Color* data, int mult)
 	int m = static_cast<int>(factor);
 
 	int ppm = dpi * m;
-	std::cout << ppm << endl;
 
 	unsigned char bmpfileheader[14] = { 'B','M', 0,0,0,0, 0,0,0,0, 54,0,0,0 };
 	unsigned char bmpinfoheader[40] = { 40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0,24,0 };
@@ -280,6 +284,8 @@ void savebmp(const char* filename, int w, int h, int dpi, Color* data, int mult)
 //Main source
 int main()
 {
+	clock_t t0, t1, t2;
+	t0 = clock();
 	int thisone = 0;
 
 	int dpi = 72;
@@ -287,22 +293,51 @@ int main()
 	int height = 720;
 	int n = width * height;
 	Color* pixels = new Color[n];
-	ThreeDVect* points = new ThreeDVect[8];
-	points[0].setXYZ(100, 100, 9);
-	points[1].setXYZ(150, 100, 9);
-	points[2].setXYZ(100, 150, 9);
-	points[3].setXYZ(150, 150, 9);
-	points[4].setXYZ(100, 100, 29);
-	points[5].setXYZ(150, 100, 29);
-	points[6].setXYZ(100, 150, 29);
-	points[7].setXYZ(150, 150, 29);
-	TwoDVect* projections = new TwoDVect[8];
+	for (int i = 0; i < 1; i++) {
+		ThreeDVect* points = new ThreeDVect[8];
+		points[0].setXYZ(100, 100, 9);
+		points[1].setXYZ(150, 100, 9);
+		points[2].setXYZ(100, 150, 9);
+		points[3].setXYZ(150, 150, 9);
+		points[4].setXYZ(100, 100,19);
+		points[5].setXYZ(150, 100,19);
+		points[6].setXYZ(100, 150, 19);
+		points[7].setXYZ(150, 150, 19);
+		TwoDVect* projections = new TwoDVect[8];
 
-	for (int i = 0; i < 8; i++) {
-		TwoDVect projection = project(points[i].getX(), points[i].getY(), points[i].getZ(), 200, width, height);
-		std::cout << projection.getX() * 1 << ' ' << projection.getY() * 1 << endl;
-		projections[i] = projection;
+		for (int i = 0; i < 8; i++) {
+			TwoDVect projection = project(points[i].getX(), points[i].getY(), points[i].getZ(), 20, width, height);
+			std::cout << projection.getX() * 1 << ' ' << projection.getY() * 1 << endl;
+			projections[i] = projection;
+		}
+		cube(points, width, height, projections, pixels);
 	}
-	cube(points, width, height, projections, pixels);
+	for (int i = 0; i < 1; i++) {
+		ThreeDVect* points = new ThreeDVect[8];
+		points[0].setXYZ(0, 0, 9);
+		points[1].setXYZ(45, 0, 9);
+		points[2].setXYZ(0, 45, 9);
+		points[3].setXYZ(45, 45, 9);
+		points[4].setXYZ(0, 0, 29);
+		points[5].setXYZ(45, 0, 29);
+		points[6].setXYZ(0, 45, 29);
+		points[7].setXYZ(45, 45, 29);
+		TwoDVect* projections = new TwoDVect[8];
+
+		for (int i = 0; i < 8; i++) {
+			TwoDVect projection = project(points[i].getX(), points[i].getY(), points[i].getZ(), 6, width, height);
+			std::cout << projection.getX() * 1 << ' ' << projection.getY() * 1 << endl;
+			projections[i] = projection;
+		}
+		cube(points, width, height, projections, pixels);
+	}
+
+	t1 = clock();
 	savebmp("scene.bmp", width, height, dpi, pixels, 10);
+
+	t2 = clock();
+	cout << ((float)t1 - (float)t0) / 1000 << " seconds to render without hard drive factored in" << endl;
+	cout << ((float)t2 - (float)t0) / 1000 << " seconds to render with hard drive factored in";
+
+	return 0;
 }
